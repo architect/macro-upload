@@ -71,7 +71,7 @@ module.exports = function upload(arc, cfn) {
     Properties: {
       Handler: 'index.handler',
       CodeUri: './src/upload',
-      Runtime: 'nodejs8.10',
+      Runtime: 'nodejs12.x',
       MemorySize: 3008,
       Timeout: 60,
       Environment: {

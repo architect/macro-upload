@@ -74,6 +74,8 @@ module.exports = function upload (arc, cfn) {
       Runtime: 'nodejs10.x',
       MemorySize: 3008,
       Layers: [
+        // We get the below layer, which contains Image Magick binaries, from
+        // the serverless 'application' we incorporate at the end of this file
         {'Fn::GetAtt': ['ImageMagick', 'Outputs.LayerVersion']}
       ],
       Timeout: 60,
@@ -89,6 +91,9 @@ module.exports = function upload (arc, cfn) {
     }
   }
 
+  // Create a nested stack of this 'application' so we can reference the image
+  // magick bits its provides as a layer
+  // App: https://serverlessrepo.aws.amazon.com/applications/arn:aws:serverlessrepo:us-east-1:145266761615:applications~image-magick-lambda-layer
   cfn.Resources.ImageMagick = {
     Type: 'AWS::Serverless::Application',
     Properties: {

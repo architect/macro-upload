@@ -71,8 +71,11 @@ module.exports = function upload (arc, cfn) {
     Properties: {
       Handler: 'index.handler',
       CodeUri: './src/upload',
-      Runtime: 'nodejs12.x',
+      Runtime: 'nodejs10.x',
       MemorySize: 3008,
+      Layers: [
+        {'Fn::GetAtt': ['ImageMagick', 'Outputs.LayerVersion']}
+      ],
       Timeout: 60,
       Environment: {
         Variables: {}
@@ -82,6 +85,16 @@ module.exports = function upload (arc, cfn) {
           'arn:aws:iam::${AWS::AccountId}:role/${role}',
           { role: { Ref: 'UploadRole' } }
         ]
+      }
+    }
+  }
+
+  cfn.Resources.ImageMagick = {
+    Type: 'AWS::Serverless::Application',
+    Properties: {
+      Location: {
+        ApplicationId: 'arn:aws:serverlessrepo:us-east-1:145266761615:applications/image-magick-lambda-layer',
+        SemanticVersion: '1.0.0'
       }
     }
   }

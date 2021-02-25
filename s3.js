@@ -8,7 +8,7 @@ var crypto = require('crypto')
 // * secretKey
 module.exports = function s3Credentials (config, params) {
   return {
-    endpoint: 'https://' + config.bucket + '.s3.amazonaws.com',
+    endpoint: 'https://' + config.bucket + '.' + config.region + '.s3.amazonaws.com',
     params: s3Params(config, params)
   }
 }

@@ -5,10 +5,10 @@
  * - S3_UPLOAD_KEY
  * - S3_UPLOAD_SECRET
  */
-module.exports = function discovery(arc, cfn) {
+module.exports = function discovery (arc, cfn) {
 
   // loop thru all lambdas and add the S3_UPLOAD_SECRET and S3_UPLOAD_KEY
-  Object.keys(cfn.Resources).forEach(resource=> {
+  Object.keys(cfn.Resources).forEach(resource => {
 
     let current = cfn.Resources[resource]
     let lambda = current.Type === 'AWS::Serverless::Function' || current.Type === 'AWS::Lambda::Function'
@@ -29,7 +29,7 @@ module.exports = function discovery(arc, cfn) {
       }
 
       current.Properties.Environment.Variables.S3_UPLOAD_SECRET = {
-        'Fn::GetAtt': ['Creds', 'SecretAccessKey']
+        'Fn::GetAtt': [ 'Creds', 'SecretAccessKey' ]
       }
     }
   })
@@ -40,7 +40,7 @@ module.exports = function discovery(arc, cfn) {
     Value: {
       'Fn::Sub': '${BucketPrefix}-upload-bucket'
     }
-  } 
+  }
 
   return cfn
 }

@@ -6,15 +6,15 @@ var crypto = require('crypto')
 // * region
 // * accessKey
 // * secretKey
-module.exports = function s3Credentials(config, params) {
+module.exports = function s3Credentials (config, params) {
   return {
-    endpoint: "https://" + config.bucket + ".s3.amazonaws.com",
+    endpoint: 'https://' + config.bucket + '.s3.amazonaws.com',
     params: s3Params(config, params)
   }
 }
 
 // Returns the parameters that must be passed to the API call
-function s3Params(config, params) {
+function s3Params (config, params) {
   var credential = amzCredential(config)
   var policy = s3UploadPolicy(config, params, credential)
   var policyBase64 = new Buffer(JSON.stringify(policy)).toString('base64')
@@ -31,17 +31,17 @@ function s3Params(config, params) {
   }
 }
 
-function dateString() {
+function dateString () {
   var date = new Date().toISOString()
   return date.substr(0, 4) + date.substr(5, 2) + date.substr(8, 2)
 }
 
-function amzCredential(config) {
-  return [config.accessKey, dateString(), config.region, 's3/aws4_request'].join('/')
+function amzCredential (config) {
+  return [ config.accessKey, dateString(), config.region, 's3/aws4_request' ].join('/')
 }
 
 // Constructs the policy
-function s3UploadPolicy(config, params, credential) {
+function s3UploadPolicy (config, params, credential) {
   return {
     // 5 minutes into the future
     expiration: new Date((new Date).getTime() + (5 * 60 * 1000)).toISOString(),
@@ -50,12 +50,12 @@ function s3UploadPolicy(config, params, credential) {
       { key: params.filename },
       { acl: 'public-read' },
       { success_action_redirect: params.redirect },
-      //{ success_action_status: "201" },
+      // { success_action_status: "201" },
       // Optionally control content type and file size
       // A content-type clause is required (even if it's all-permissive)
       // so that the uploader can specify a content-type for the file
-     // ['starts-with', '$Content-Type',  ''],
-     // ['content-length-range', 0, 1000],
+      // ['starts-with', '$Content-Type',  ''],
+      // ['content-length-range', 0, 1000],
       { 'x-amz-algorithm': 'AWS4-HMAC-SHA256' },
       { 'x-amz-credential': credential },
       { 'x-amz-date': dateString() + 'T000000Z' }
@@ -63,14 +63,14 @@ function s3UploadPolicy(config, params, credential) {
   }
 }
 
-function hmac(key, string) {
+function hmac (key, string) {
   var hmac = crypto.createHmac('sha256', key)
   hmac.end(string)
   return hmac.read()
 }
 
 // Signs the policy with the credential
-function s3UploadSignature(config, policyBase64/*, credential*/) {
+function s3UploadSignature (config, policyBase64/* , credential*/) {
   var dateKey = hmac('AWS4' + config.secretKey, dateString())
   var dateRegionKey = hmac(dateKey, config.region)
   var dateRegionServiceKey = hmac(dateRegionKey, 's3')

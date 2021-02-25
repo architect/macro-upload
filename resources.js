@@ -1,4 +1,4 @@
-module.exports = function upload(arc, cfn) {
+module.exports = function upload (arc, cfn) {
 
   // seed for a random but static bucket name
   let hbd = 1569639949124
@@ -19,34 +19,34 @@ module.exports = function upload(arc, cfn) {
         'Fn::Sub': '${BucketPrefix}-upload-bucket'
       },
       CorsConfiguration: {
-        CorsRules: [{
-					AllowedHeaders: [
-						'*'
-					],
-					AllowedMethods: [
-						'GET', 'POST'
-					],
-					AllowedOrigins: [
-						'*'
-					],
-					MaxAge: '3000'
-				}]
+        CorsRules: [ {
+          AllowedHeaders: [
+            '*'
+          ],
+          AllowedMethods: [
+            'GET', 'POST'
+          ],
+          AllowedOrigins: [
+            '*'
+          ],
+          MaxAge: '3000'
+        } ]
       },
       NotificationConfiguration: {
-        LambdaConfigurations: [{
+        LambdaConfigurations: [ {
           'Function': {
-            'Fn::GetAtt': ['UploadLambda', 'Arn']
+            'Fn::GetAtt': [ 'UploadLambda', 'Arn' ]
           },
           Event: 's3:ObjectCreated:*',
           Filter: {
             S3Key: {
-              Rules: [{
+              Rules: [ {
                 Name: 'prefix',
                 Value: 'raw'
-              }]
+              } ]
             }
           }
-        }]
+        } ]
       }
     }
   }
@@ -55,7 +55,7 @@ module.exports = function upload(arc, cfn) {
     Type: 'AWS::Lambda::Permission',
     Properties: {
       FunctionName: {
-        'Fn::GetAtt': ['UploadLambda', 'Arn']
+        'Fn::GetAtt': [ 'UploadLambda', 'Arn' ]
       },
       Action: 'lambda:InvokeFunction',
       Principal: 's3.amazonaws.com',
@@ -80,7 +80,7 @@ module.exports = function upload(arc, cfn) {
       Role: {
         'Fn::Sub': [
           'arn:aws:iam::${AWS::AccountId}:role/${role}',
-          {role: {Ref: 'UploadRole'}}
+          { role: { Ref: 'UploadRole' } }
         ]
       }
     }

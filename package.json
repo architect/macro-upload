@@ -1,9 +1,18 @@
 {
   "name": "@architect/macro-upload",
   "version": "1.0.1",
+  "description": "Architect macro that creates an S3 bucket for direct uploading and a Lambda function for processing direct uploads",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint . --fix",
+    "test": "npm run lint"
   },
   "author": "Brian LeRoux <b@brian.io>",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@architect/eslint-config": "^1.0.0",
+    "eslint": "^7.20.0"
+  },
+  "eslintConfig": {
+    "extends": "@architect/eslint-config"
+  }
 }

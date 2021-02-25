@@ -6,7 +6,7 @@
  * - creates a resource named 'Creds' which we get id and key for upload signing
  * - adds UploadMacroPolicy to 'Role' so any Lambda can read/write the bucket contents
  */
-module.exports = function security(arc, cfn) {
+module.exports = function security (arc, cfn) {
 
   // create an IAM user for uplaoding
   cfn.Resources.Uploader = {
@@ -21,21 +21,21 @@ module.exports = function security(arc, cfn) {
     Properties: {
       PolicyName: 'UploadPolicy',
       PolicyDocument: {
-        Statement: [{
+        Statement: [ {
           Effect: 'Allow',
           Action: [
             's3:PutObject',
             's3:PutObjectAcl'
           ],
-          Resource: [{
+          Resource: [ {
             'Fn::Sub': 'arn:aws:s3:::${BucketPrefix}-upload-bucket'
           },
           {
             'Fn::Sub': 'arn:aws:s3:::${BucketPrefix}-upload-bucket/*'
-          }]
-        }]
+          } ]
+        } ]
       },
-      Users: [{Ref: 'Uploader'}],
+      Users: [ { Ref: 'Uploader' } ],
     }
   }
 
@@ -44,7 +44,7 @@ module.exports = function security(arc, cfn) {
     Type: 'AWS::IAM::AccessKey',
     DependsOn: 'Uploader',
     Properties: {
-      UserName: {Ref: 'Uploader'}
+      UserName: { Ref: 'Uploader' }
     }
   }
 
@@ -54,18 +54,18 @@ module.exports = function security(arc, cfn) {
     Properties: {
       AssumeRolePolicyDocument: {
         Version: '2012-10-17',
-        Statement: [{
+        Statement: [ {
           Effect: 'Allow',
           Principal: {
             Service: 'lambda.amazonaws.com'
           },
           Action: 'sts:AssumeRole'
-        }]
+        } ]
       },
-      Policies: [{
+      Policies: [ {
         PolicyName: 'ArcGlobalPolicy',
         PolicyDocument: {
-          Statement: [{
+          Statement: [ {
             Effect: 'Allow',
             Action: [
               'logs:CreateLogGroup',
@@ -74,9 +74,9 @@ module.exports = function security(arc, cfn) {
               'logs:DescribeLogStreams'
             ],
             'Resource': 'arn:aws:logs:*:*:*'
-          }]
+          } ]
         }
-      }]
+      } ]
     }
   }
 
@@ -85,7 +85,7 @@ module.exports = function security(arc, cfn) {
     Properties: {
       PolicyName: 'UploadMacroPolicy',
       PolicyDocument: {
-        Statement: [{
+        Statement: [ {
           Effect: 'Allow',
           Action: [
             's3:GetObject',
@@ -94,15 +94,15 @@ module.exports = function security(arc, cfn) {
             's3:PutObjectAcl',
             's3:ListBucket'
           ],
-          Resource: [{
+          Resource: [ {
             'Fn::Sub': 'arn:aws:s3:::${BucketPrefix}-upload-bucket'
           },
           {
             'Fn::Sub': 'arn:aws:s3:::${BucketPrefix}-upload-bucket/*'
-          }]
-        }]
+          } ]
+        } ]
       },
-      Roles: [{Ref: 'Role'}, {Ref: 'UploadRole'}]
+      Roles: [ { Ref: 'Role' }, { Ref: 'UploadRole' } ]
     }
   }
 
